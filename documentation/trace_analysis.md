@@ -1,5 +1,9 @@
 # Trace Analysis
 
+> **Note:** This file reports the trace-driven study (six trace files, 64 to 384 requests each).
+> The shorter directed-testbench results (`cache_tb.v`, 103 checks) are in `results.md`.
+> The two sets are different experiments, so their numbers are not meant to match.
+
 ## 1. Method
 `scripts/gen_traces.py` creates six trace files in `traces/` (fixed random seed). The
 trace-driven testbench `testbench/tb_trace.v` sends every request of a file to the cache

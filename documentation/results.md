@@ -1,6 +1,11 @@
 
 # Direct-Mapped Cache Controller — Simulation Results
 
+> **Note:** These are the results of the directed testbench `testbench/cache_tb.v`
+> (4 short traces, 103 self-checks). The larger trace-driven study with six trace files
+> (`traces/`, `testbench/tb_trace.v`) is in `trace_analysis.md`; its numbers differ because
+> the traces are different and longer.
+
 ## 1. Overview
 
 The Direct-Mapped Cache Controller was tested using

@@ -64,8 +64,6 @@ With 32-byte blocks every miss brings in twice as much data, so the next 7 words
 
 ## 6. What I Understood
 
-Mishti: Write two lines in your own words explaining why the number of index bits depends on cache size and block size, and what happens to the tag when the index becomes larger.
-
 **My understanding:**
 
 [The number of index bits depends on the number of cache blocks, which is determined by the cache size and block size. If the number of index bits increases, the number of tag bits decreases because the total address size is fixed at 32 bits.]
