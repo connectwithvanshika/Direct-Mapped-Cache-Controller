@@ -1,9 +1,9 @@
 # Direct-Mapped Cache Controller (Verilog HDL)
 
 **Modern Computer Architecture | B.Tech (CS&AI) | Rishihood University**
-**Project 6 | Phase I submission**
+**Project 6 | Phase I and Phase II submission**
 
-A Verilog implementation of a 1 KB direct-mapped cache controller with a main-memory model, a self-checking testbench, simulation results and an IEEE project report.
+A Verilog implementation of a 1 KB direct-mapped cache controller with a main-memory model, a self-checking testbench, simulation results and an IEEE project report. Phase II adds a valid-bit reset, a trace-driven performance study, a cache versus no-cache comparison and FPGA synthesis results (898 logic cells, 18 block RAMs, 134.59 MHz on an iCE40 HX8K).
 
 ## Phase I deliverables
 
@@ -16,15 +16,25 @@ A Verilog implementation of a 1 KB direct-mapped cache controller with a main-me
 | Diagrams and documentation | [documentation/](documentation/) |
 | Simulation outputs and waveform | [simulation/](simulation/) |
 
+## Phase II deliverables
+
+| Deliverable | Location |
+|---|---|
+| Valid-bit reset (RTL and test) | [rtl/cache_valid_ram.v](rtl/cache_valid_ram.v), [testbench/tb_valid_reset.v](testbench/tb_valid_reset.v) |
+| Six memory-access traces and trace-driven study | [traces/](traces/), [documentation/trace_analysis.md](documentation/trace_analysis.md) |
+| Cache versus no-cache baseline | [rtl/nocache_top.v](rtl/nocache_top.v), [documentation/baseline_comparison.md](documentation/baseline_comparison.md) |
+| FPGA synthesis and timing | [synth/](synth/), [documentation/synthesis_report.md](documentation/synthesis_report.md) |
+| Final IEEE project report (Phase II) | submitted separately |
+
 ## Team
 
 | Member | Enrollment No. | GitHub | Main work |
 |---|---|---|---|
-| Riya Garg | 2401010389 | riyaseema80 | Base RTL design and integration, cache controller FSM, base testbench, FSM and block diagrams, report, repository |
-| Vanshika Yadav | 2401010496 | Sung Jin-woo | 1 KB random trace, comparator fault-injection test, simulation output, results analysis |
-| Nitanshu Goyal | 2401010304 | Nitanshu12 | Unit testbenches for address decoder, tag comparator, tag and valid RAMs; datapath notes |
-| Krish Garg | 2401020097 | Krish Garg | Unit testbenches for data RAM and main memory; memory read-latency parameter and experiment |
-| Mishti Sharma | 2401010278 | mishti | Corner-case testbench, cache parameter analysis, references check |
+| Riya Garg | 2401010389 | riyaseema80 | Phase I: base RTL design and integration, cache controller FSM, base testbench, FSM and block diagrams, report, repository. Phase II: valid-bit reset (RTL, top-level connection, testbench) |
+| Vanshika Yadav | 2401010496 | Sung Jin-woo | Phase I: 1 KB random trace, comparator fault-injection test, simulation output, results analysis. Phase II: trace generator, trace-driven testbench, automated runner, six traces, plotting script, trace analysis |
+| Nitanshu Goyal | 2401010304 | Nitanshu12 | Phase I: unit testbenches for address decoder, tag comparator, tag and valid RAMs; datapath notes. Phase II: FPGA synthesis flow (Yosys and nextpnr), resource and timing report |
+| Krish Garg | 2401020097 | Krish Garg | Phase I: unit testbenches for data RAM and main memory; memory read-latency parameter and experiment. Phase II: no-cache baseline design, comparison testbench, baseline analysis |
+| Mishti Sharma | 2401010278 | mishti | Phase I: corner-case testbench, cache parameter analysis, references check. Phase II: interview-preparation documentation (not yet in the repository) |
 
 The commit history of every member is visible under *Insights > Contributors* or with `git shortlog -sne`.
 
@@ -118,6 +128,7 @@ State values are hexadecimal. The waveform shows a read miss at `0x10` (7 cycles
 │   ├── cache_top.v
 │   ├── cache_valid_ram.v
 │   ├── main_memory.v
+│   ├── nocache_top.v            baseline without cache (Phase II)
 │   └── tag_comparator.v
 ├── testbench/
 │   ├── cache_tb.v               main self-checking testbench (reference model, 4 traces)
@@ -126,12 +137,19 @@ State values are hexadecimal. The waveform shows a read miss at `0x10` (7 cycles
 │   ├── tb_tag_comparator.v      unit test
 │   ├── tb_tag_valid_ram.v       unit test
 │   ├── tb_data_ram.v            unit test
-│   └── tb_main_memory.v         unit test
+│   ├── tb_main_memory.v         unit test
+│   ├── tb_valid_reset.v         valid-bit reset test (Phase II)
+│   ├── tb_trace.v               trace-driven testbench (Phase II)
+│   └── tb_compare.v             cache versus no-cache (Phase II)
+├── traces/                      six trace files (Phase II)
+├── scripts/                     gen_traces.py, run_traces.sh, plot_results.py (Phase II)
+├── synth/                       run_synth.sh, make_report.py, synth_wrapper.v, out/ (Phase II)
 ├── simulation/
 │   ├── waveform_miss_hit_writemiss.png
 │   ├── sim_output.txt
 │   ├── mutation_test_output.txt
-│   └── latency_L1.txt, latency_L2.txt, latency_L4.txt, latency_L8.txt
+│   ├── latency_L1.txt, latency_L2.txt, latency_L4.txt, latency_L8.txt
+│   ├── compare_L*.txt, trace_results.csv, trace_results.png   (Phase II)
 ├── documentation/
 │   ├── block_diagram.png
 │   ├── fsm_diagram.png
@@ -139,9 +157,12 @@ State values are hexadecimal. The waveform shows a read miss at `0x10` (7 cycles
 │   ├── parameters.md
 │   ├── datapath_notes.md
 │   ├── latency_experiment.md
-│   └── references_check.md
+│   ├── references_check.md
+│   ├── trace_analysis.md        (Phase II)
+│   ├── baseline_comparison.md   (Phase II)
+│   └── synthesis_report.md      (Phase II)
 └── report/
-    └── IEEE_Project_Report.pdf
+    └── Cache_Controller_IEEE_Report.pdf   (Phase I)
 ```
 
 ## How to run
@@ -183,6 +204,29 @@ iverilog -DMEM_READ_LATENCY=4 -o sim rtl/*.v testbench/cache_tb.v
 vvp sim
 ```
 
+**Valid-bit reset test:**
+```
+iverilog -o sim rtl/*.v testbench/tb_valid_reset.v && vvp sim
+```
+
+**Trace-driven study** (generates the traces, runs all six, writes `simulation/trace_results.csv`):
+```
+bash scripts/run_traces.sh
+python3 scripts/plot_results.py      # needs matplotlib: pip install matplotlib
+```
+
+**Cache versus no cache** (change the memory latency with `-DMEM_READ_LATENCY`):
+```
+iverilog -DMEM_READ_LATENCY=20 -o sim rtl/*.v testbench/tb_compare.v && vvp sim
+```
+
+**FPGA synthesis** (needs the OSS CAD Suite: `yosys` and `nextpnr-ice40`):
+```
+source /path/to/oss-cad-suite/environment
+bash synth/run_synth.sh
+python3 synth/make_report.py
+```
+
 **View the waveform:** open `cache_wave.vcd` with GTKWave or with the Surfer extension in VS Code. The files `sim` and `cache_wave.vcd` are created locally and are ignored by git.
 
 ## Verification
@@ -192,8 +236,10 @@ vvp sim
 - **Result:** 103 of 103 checks passed.
 - **Fault injection:** when the comparison in `tag_comparator.v` was temporarily changed from `==` to `!=`, the testbench reported 47 failed checks out of 103 (see `simulation/mutation_test_output.txt`). The faulty code was not committed.
 - **Corner cases:** first and last line, conflict on one index, write-through after eviction, write miss without allocation, all-ones tag and offsets inside one block: 31 of 31 checks passed.
+- **Valid-bit reset (Phase II):** after a reset every line is empty again, so a block that was cached before the reset misses afterwards.
+- **Unit tests:** address decoder, tag comparator, data RAM, tag and valid RAM, main memory: all passed.
 
-## Results
+## Results (directed testbench)
 
 AMAT = hit time + miss rate x miss penalty = 4 + miss rate x 3 (read accesses only).
 
@@ -212,6 +258,21 @@ AMAT = hit time + miss rate x miss penalty = 4 + miss rate x 3 (read accesses on
 
 More details: [documentation/results.md](documentation/results.md).
 
+## Trace-driven study (Phase II)
+
+Six longer traces were generated with `scripts/gen_traces.py` (fixed seed) and run with `testbench/tb_trace.v`. AMAT = 4 + miss rate x 3 (reads only).
+
+| Trace | Reads | Writes | Read hits | Hit rate | AMAT (cycles) |
+|---|---:|---:|---:|---:|---:|
+| Sequential | 64 | 0 | 48 | 75.0% | 4.75 |
+| Conflict | 40 | 0 | 0 | 0% | 7.00 |
+| Loop over 1.5 KB | 384 | 0 | 96 | 25.0% | 6.25 |
+| Random, 1 KB | 200 | 0 | 139 | 69.5% | 4.92 |
+| Random, 4 KB | 200 | 0 | 40 | 20.0% | 6.40 |
+| Mixed read/write | 123 | 77 | 40 | 32.5% | 6.02 |
+
+The hit rate depends on the access pattern: spatial locality and a working set that fits into the cache give high hit rates; a working set larger than the cache, or addresses with the same index, give low hit rates. Details: [documentation/trace_analysis.md](documentation/trace_analysis.md). This is a different experiment from the directed testbench above, so the numbers are not meant to match.
+
 ## Memory latency experiment
 
 The same testbench was run with a main-memory read latency of 1, 2, 4 and 8 cycles.
@@ -225,20 +286,54 @@ The same testbench was run with a main-memory read latency of 1, 2, 4 and 8 cycl
 
 The miss rate does not change because the memory speed does not decide which accesses hit. The miss latency is 6 cycles plus the memory latency. Details: [documentation/latency_experiment.md](documentation/latency_experiment.md).
 
+## Cache versus no cache (Phase II)
+
+A baseline without cache (`rtl/nocache_top.v`) and the cache were given the same 72 reads (34 hits, 38 misses in the cache).
+
+| Memory latency L | Cache cycles | No-cache cycles | Speed-up |
+|---:|---:|---:|---:|
+| 1 | 402 | 216 | 0.54 |
+| 4 | 516 | 432 | 0.84 |
+| 8 | 668 | 720 | 1.08 |
+| 20 | 1124 | 1584 | 1.41 |
+| 50 | 2264 | 3744 | 1.65 |
+
+Cache total = 364 + 38 L cycles, no-cache total = 144 + 72 L cycles, so the two are equal at L = 220/34, about 6.5 cycles. For this workload the cache pays off only when main memory is slower than about 6.5 cycles. Details: [documentation/baseline_comparison.md](documentation/baseline_comparison.md).
+
+## FPGA synthesis (Phase II)
+
+Target: Lattice iCE40 HX8K, open-source flow (Yosys and nextpnr), 25 MHz target clock. A wrapper with registers around the cache is used for timing, because `cache_top` has more than 300 I/O pins.
+
+| Module | Cells | LUT4 | Flip-flops | Block RAM |
+|---|---:|---:|---:|---:|
+| address_decoder | 0 | 0 | 0 | 0 |
+| tag_comparator | 30 | 30 | 0 | 0 |
+| cache_controller | 24 | 12 | 12 | 0 |
+| cache_tag_ram | 84 | 30 | 52 | 2 |
+| cache_valid_ram | 215 | 150 | 65 | 0 |
+| cache_data_ram | 266 | 129 | 129 | 8 |
+| cache_top (data multiplexer) | 128 | 128 | 0 | 0 |
+| main_memory (simulation model) | 444 | 153 | 277 | 8 |
+| **Total** | **1191** | **632** | **535** | **18** |
+
+After place and route: **898 / 7680 logic cells (11%)**, **18 / 32 block RAMs (56%)**, estimated maximum frequency **134.59 MHz**. The main memory is a simulation model, so its cells are not part of the cache. The numbers belong to the iCE40 family and to these tool versions. Details: [documentation/synthesis_report.md](documentation/synthesis_report.md).
+
 ## Limitations
 
 - The memory interface moves whole 128-bit blocks. The offset is decoded but is not used to select a word.
-- The valid-bit memory has no reset input; it is initialized once at the start of the simulation. Valid bits are only set, never cleared.
+- The valid-bit memory is cleared at start-up and by the reset input (Phase II). The tag RAM and data RAM are not reset, which is safe because a line is used only when its valid bit is 1.
 - The data RAM has no initial values, so a line that was never written returns unknown (`x`). The valid bit prevents the cache from using such a line.
 - The main-memory model is simple (no refresh, no banks), so the miss penalty is small compared with a real DRAM.
-- The design was verified by simulation only. FPGA synthesis (resource use and maximum frequency) has not been done yet.
+- Synthesis was done with the open-source Yosys and nextpnr flow for an iCE40 FPGA, not with Vivado. The design was not run on a physical FPGA board.
+- The 6.5-cycle break-even latency belongs to the 72-read workload (47% hit rate) used in the comparison.
 
 ## Future work
 
-- Synthesis for an FPGA (resource utilization and maximum frequency)
 - More detailed main-memory model
 - Two-way set-associative cache with LRU replacement
 - Write-back policy with dirty bits
+- Victim cache to reduce conflict misses
+- Word-level access using the offset bits
 
 ## References
 
