@@ -1,6 +1,6 @@
 // synth_wrapper.v
-// Only for FPGA synthesis and timing. cache_top has more than 300 I/O pins
-// (two 128-bit buses), which does not fit on a small FPGA package. This wrapper
+// Only for FPGA synthesis and timing. cache_top has 294 I/O pins (two 128-bit
+// buses), but the FPGA package has only 206 user I/O pins. This wrapper
 // feeds the cache from shift registers and compresses the result into 1 output
 // bit, so the cache runs with registered inputs and outputs. The reported
 // maximum frequency is then the speed of the cache itself.

@@ -4,8 +4,9 @@
 - Target: Lattice iCE40 HX8K FPGA (open-source flow: Yosys for synthesis, nextpnr for
   place and route and timing).
 - `synth/run_synth.sh` runs everything; raw results are in `synth/out/`.
-- Reason for the wrapper: `cache_top` has more than 300 I/O pins (two 128-bit buses),
-  so `synth/synth_wrapper.v` puts registers around the cache. It is used only for timing.
+- Reason for the wrapper: `cache_top` has 294 I/O pins (164 inputs, 130 outputs; two 128-bit
+  buses), but the FPGA package has only 206 user I/O pins. So `synth/synth_wrapper.v` feeds the
+  cache from a shift register and reduces its output to one bit. It is used only for timing.
 
 ## 2. Resource utilization per module (Yosys)
 
@@ -22,7 +23,8 @@
 | **Total** | 1191 | 632 | 535 | 18 |
 
 ## 3. After place and route (nextpnr, iCE40 HX8K)
-- Logic cells used: 898 / 7680 (11 %)
+- Logic cells used: 898 / 7680 (11 %). This is the whole timing design:
+  cache, main-memory model and the timing wrapper (shift register and output registers).
 - Block RAM used: 18 / 32 (56 %)
 - Maximum clock frequency: 134.59 MHz (final value, after routing)
 
