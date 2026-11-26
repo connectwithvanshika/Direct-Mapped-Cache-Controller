@@ -1,3 +1,4 @@
 cache_test
 sim
 *.vcd
+synth/out/wrapper.json

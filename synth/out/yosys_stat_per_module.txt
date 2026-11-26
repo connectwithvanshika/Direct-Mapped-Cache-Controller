@@ -1,0 +1,169 @@
+
+11. Printing statistics.
+
+=== address_decoder ===
+
+        +----------Local Count, excluding submodules.
+        | 
+        4 wires
+       64 wire bits
+        4 public wires
+       64 public wire bits
+        4 ports
+       64 port bits
+
+=== cache_controller ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       27 wires
+       36 wire bits
+       27 public wires
+       36 public wire bits
+       13 ports
+       13 port bits
+       24 cells
+       11   SB_DFFR
+        1   SB_DFFS
+       12   SB_LUT4
+
+=== cache_data_ram ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      134 wires
+      664 wire bits
+      134 public wires
+      664 public wire bits
+        5 ports
+      264 port bits
+      266 cells
+      129   SB_DFF
+      129   SB_LUT4
+        8   SB_RAM40_4K
+
+=== cache_tag_ram ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       59 wires
+      194 wire bits
+       59 public wires
+      194 public wire bits
+        5 ports
+       52 port bits
+       84 cells
+       52   SB_DFF
+       30   SB_LUT4
+        2   SB_RAM40_4K
+
+=== cache_top ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      152 wires
+      762 wire bits
+      152 public wires
+      762 public wire bits
+        9 ports
+      294 port bits
+      128 cells
+      128   SB_LUT4
+        7 submodules
+        1   address_decoder
+        1   cache_controller
+        1   cache_data_ram
+        1   cache_tag_ram
+        1   cache_valid_ram
+        1   main_memory
+        1   tag_comparator
+
+=== cache_valid_ram ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      167 wires
+      251 wire bits
+      167 public wires
+      251 public wire bits
+        5 ports
+       10 port bits
+      215 cells
+        1   SB_DFF
+       64   SB_DFFE
+      150   SB_LUT4
+
+=== main_memory ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      296 wires
+     1005 wire bits
+      296 public wires
+     1005 public wire bits
+        7 ports
+      288 port bits
+      444 cells
+        6   SB_CARRY
+      137   SB_DFF
+      138   SB_DFFE
+        1   SB_DFFESR
+        1   SB_DFFSS
+      153   SB_LUT4
+        8   SB_RAM40_4K
+
+=== tag_comparator ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       13 wires
+       81 wire bits
+       13 public wires
+       81 public wire bits
+        4 ports
+       46 port bits
+       30 cells
+       30   SB_LUT4
+
+=== design hierarchy ===
+
+        +----------Count including submodules.
+        | 
+     1191 cache_top
+       24 cache_controller
+      266 cache_data_ram
+       84 cache_tag_ram
+      215 cache_valid_ram
+      444 main_memory
+       30 tag_comparator
+
+        +----------Count including submodules.
+        | 
+      852 wires
+     3057 wire bits
+      852 public wires
+     3057 public wire bits
+       52 ports
+     1031 port bits
+        - memories
+        - memory bits
+        - processes
+     1191 cells
+        6   SB_CARRY
+      319   SB_DFF
+      202   SB_DFFE
+        1   SB_DFFESR
+       11   SB_DFFR
+        1   SB_DFFS
+        1   SB_DFFSS
+      632   SB_LUT4
+       18   SB_RAM40_4K
+        7 submodules
+        1   address_decoder
+        1   cache_controller
+        1   cache_data_ram
+        1   cache_tag_ram
+        1   cache_valid_ram
+        1   main_memory
+        1   tag_comparator
+
